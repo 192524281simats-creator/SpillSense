@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 213 60% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 213 60% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 213 60% 8%;
+
+    --primary: 192 91% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 94%;
+    --secondary-foreground: 213 60% 8%;
+
+    --muted: 210 35% 94%;
+    --muted-foreground: 215 20% 45%;
+
+    --accent: 162 72% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 80% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 88%;
+    --input: 214 32% 91%;
+    --ring: 192 91% 40%;
+
+    --radius: 0.75rem;
+
+    /* SpillSense custom tokens */
+    --aqua: 192 91% 40%;
+    --aqua-light: 192 91% 55%;
+    --navy: 213 60% 8%;
+    --navy-mid: 213 50% 18%;
+    --emerald: 162 72% 40%;
+    --amber-warn: 38 95% 50%;
+    --red-critical: 0 80% 55%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 213 50% 18%;
+    --sidebar-primary: 192 91% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 94%;
+    --sidebar-accent-foreground: 213 60% 8%;
+    --sidebar-border: 214 32% 88%;
+    --sidebar-ring: 192 91% 40%;
+  }
+
+  .dark {
+    --background: 213 60% 6%;
+    --foreground: 210 40% 96%;
+
+    --card: 213 55% 10%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 213 55% 10%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 192 85% 48%;
+    --primary-foreground: 213 60% 6%;
+
+    --secondary: 213 50% 15%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 213 50% 15%;
+    --muted-foreground: 215 20% 60%;
+
+    --accent: 162 65% 45%;
+    --accent-foreground: 213 60% 6%;
+
+    --destructive: 0 75% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 213 50% 18%;
+    --input: 213 50% 18%;
+    --ring: 192 85% 48%;
+
+    --sidebar-background: 213 60% 8%;
+    --sidebar-foreground: 210 40% 85%;
+    --sidebar-primary: 192 85% 48%;
+    --sidebar-primary-foreground: 213 60% 6%;
+    --sidebar-accent: 213 50% 14%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 213 50% 14%;
+    --sidebar-ring: 192 85% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-inter antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .font-inter {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .font-tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  .glass {
+    @apply bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10;
+  }
+
+  .glass-card {
+    @apply bg-white dark:bg-[hsl(213,55%,10%)] border border-border shadow-sm;
+  }
+
+  .gradient-aqua {
+    background: linear-gradient(135deg, hsl(192 91% 40%) 0%, hsl(192 91% 55%) 50%, hsl(162 72% 40%) 100%);
+  }
+
+  .gradient-navy {
+    background: linear-gradient(135deg, hsl(213 60% 8%) 0%, hsl(213 50% 18%) 100%);
+  }
+
+  .synthetic-badge {
+    @apply inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 border border-purple-200 dark:border-purple-700;
+  }
+
+  .risk-safe {
+    @apply text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800;
+  }
+
+  .risk-moderate {
+    @apply text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800;
+  }
+
+  .risk-high {
+    @apply text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800;
+  }
+
+  .risk-critical {
+    @apply text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 2px;
+  }
+}
+
+/* Leaflet overrides for dark mode */
+.dark .leaflet-tile {
+  filter: brightness(0.7) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+.dark .leaflet-container {
+  background: hsl(213 60% 6%);
+}
+
+/* Chart animations */
+@keyframes draw-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chart-animate {
+  animation: draw-in 0.4s ease-out;
+}
+
+/* Count-up number style */
+.kpi-number {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
