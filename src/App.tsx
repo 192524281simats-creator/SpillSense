@@ -14,6 +14,7 @@ import PolicyBattle from "./pages/PolicyBattle";
 import WhatIf from "./pages/WhatIf";
 import BacktestLab from "./pages/BacktestLab";
 import SpillToStore from "./pages/SpillToStore";
+import AllocationPage from "./pages/Allocation";
 import DownstreamSecurity from "./pages/DownstreamSecurity";
 import ClimateIntelligence from "./pages/ClimateIntelligence";
 import EcosystemProtection from "./pages/EcosystemProtection";
@@ -35,16 +36,17 @@ const App = () => (
 
             {/* App — with sidebar layout */}
             <Route element={<Layout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/forecast" element={<Forecast />} />
-              <Route path="/regretguard" element={<RegretGuardPage />} />
+              <Route path="/dashboard"    element={<Dashboard />} />
+              <Route path="/forecast"     element={<Forecast />} />
+              <Route path="/regretguard"  element={<RegretGuardPage />} />
               <Route path="/policy-battle" element={<PolicyBattle />} />
-              <Route path="/what-if" element={<WhatIf />} />
-              <Route path="/backtest" element={<BacktestLab />} />
+              <Route path="/what-if"      element={<WhatIf />} />
+              <Route path="/backtest"     element={<BacktestLab />} />
               <Route path="/spill-to-store" element={<SpillToStore />} />
-              <Route path="/downstream" element={<DownstreamSecurity />} />
-              <Route path="/climate" element={<ClimateIntelligence />} />
-              <Route path="/ecosystem" element={<EcosystemProtection />} />
+              <Route path="/allocation"   element={<AllocationPage />} />
+              <Route path="/downstream"   element={<DownstreamSecurity />} />
+              <Route path="/climate"      element={<ClimateIntelligence />} />
+              <Route path="/ecosystem"    element={<EcosystemProtection />} />
               <Route path="/data-sources" element={<DataSources />} />
             </Route>
 

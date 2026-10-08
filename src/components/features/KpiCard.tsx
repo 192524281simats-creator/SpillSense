@@ -1,85 +1,37 @@
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 
 interface KpiCardProps {
   label: string;
-  value: string | number;
+  value: number | string;
   unit?: string;
   subtext?: string;
-  trend?: "up" | "down" | "neutral";
-  trendLabel?: string;
   color?: string;
-  badge?: React.ReactNode;
-  onClick?: () => void;
+  badge?: ReactNode;
+  icon?: ReactNode;
+  trend?: "up" | "down" | "neutral";
   className?: string;
-  icon?: React.ReactNode;
 }
 
-export function KpiCard({
-  label, value, unit, subtext, trend, trendLabel, color, badge, onClick, className, icon
-}: KpiCardProps) {
-  const [displayed, setDisplayed] = useState(0);
-  const numValue = typeof value === "number" ? value : parseFloat(String(value));
-  const isNum = !isNaN(numValue);
-  const ref = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (!isNum) return;
-    const start = Date.now();
-    const duration = 800;
-    const startVal = 0;
-    const endVal = numValue;
-
-    const step = () => {
-      const elapsed = Date.now() - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplayed(Math.round(startVal + (endVal - startVal) * eased * 10) / 10);
-      if (progress < 1) ref.current = requestAnimationFrame(step);
-    };
-    ref.current = requestAnimationFrame(step);
-    return () => { if (ref.current) cancelAnimationFrame(ref.current); };
-  }, [numValue]);
-
-  const trendIcon = trend === "up" ? "↑" : trend === "down" ? "↓" : "→";
-  const trendColor = trend === "up"
-    ? "text-emerald-600 dark:text-emerald-400"
-    : trend === "down" ? "text-red-500" : "text-muted-foreground";
-
+export function KpiCard({ label, value, unit, subtext, color = "#22d3ee", badge, icon, className }: KpiCardProps) {
   return (
-    <div
-      className={cn(
-        "glass-card rounded-xl p-4 transition-all duration-200",
-        onClick && "cursor-pointer hover:shadow-card-hover hover:-translate-y-0.5",
-        className
-      )}
-      onClick={onClick}
-      style={color ? { borderLeft: `3px solid ${color}` } : undefined}
-    >
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide leading-tight">{label}</span>
-        <div className="flex items-center gap-1">
-          {badge}
-          {icon && <span className="text-muted-foreground">{icon}</span>}
-        </div>
-      </div>
-      <div className="flex items-baseline gap-1.5">
-        <span className="kpi-number font-tabular" style={color ? { color } : undefined}>
-          {isNum ? displayed.toLocaleString() : value}
+    <div className={cn("glass-card rounded-xl p-4 flex flex-col gap-1.5", className)}>
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide leading-tight">
+          {label}
         </span>
-        {unit && <span className="text-sm text-muted-foreground font-medium">{unit}</span>}
+        {badge}
       </div>
-      {(subtext || trendLabel) && (
-        <div className="mt-1.5 flex items-center gap-1.5">
-          {trend && (
-            <span className={cn("text-xs font-medium", trendColor)}>
-              {trendIcon} {trendLabel}
-            </span>
-          )}
-          {subtext && !trendLabel && (
-            <span className="text-xs text-muted-foreground">{subtext}</span>
-          )}
-        </div>
+      <div className="flex items-end gap-1.5 mt-0.5">
+        <span className="kpi-number" style={{ color }}>
+          {typeof value === "number" ? value.toLocaleString() : value}
+        </span>
+        {unit && (
+          <span className="text-sm font-semibold text-muted-foreground pb-0.5">{unit}</span>
+        )}
+      </div>
+      {subtext && (
+        <div className="text-xs text-muted-foreground leading-tight">{subtext}</div>
       )}
     </div>
   );
@@ -88,27 +40,23 @@ export function KpiCard({
 interface RiskBadgeProps {
   level: "SAFE" | "MODERATE" | "HIGH" | "CRITICAL";
   className?: string;
-  size?: "sm" | "md" | "lg";
 }
 
-const RISK_CONFIG = {
-  SAFE: { label: "SAFE", color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800", dot: "bg-emerald-500" },
-  MODERATE: { label: "MODERATE", color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800", dot: "bg-amber-500" },
-  HIGH: { label: "HIGH", color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800", dot: "bg-orange-500" },
-  CRITICAL: { label: "CRITICAL", color: "text-red-600 dark:text-red-400", bg: "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800", dot: "bg-red-500" },
-};
+export function RiskBadge({ level, className }: RiskBadgeProps) {
+  const styles: Record<RiskBadgeProps["level"], string> = {
+    SAFE:     "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
+    MODERATE: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800",
+    HIGH:     "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 border-orange-200 dark:border-orange-800",
+    CRITICAL: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800",
+  };
+  const dots: Record<RiskBadgeProps["level"], string> = {
+    SAFE: "#10b981", MODERATE: "#f59e0b", HIGH: "#f97316", CRITICAL: "#ef4444",
+  };
 
-export function RiskBadge({ level, className, size = "md" }: RiskBadgeProps) {
-  const cfg = RISK_CONFIG[level];
   return (
-    <span className={cn(
-      "inline-flex items-center gap-1.5 font-semibold rounded-full border",
-      size === "sm" ? "text-xs px-2 py-0.5" : size === "lg" ? "text-base px-4 py-1.5" : "text-sm px-3 py-1",
-      cfg.bg, cfg.color, className
-    )}>
-      <span className={cn("rounded-full flex-shrink-0 animate-pulse", cfg.dot,
-        size === "sm" ? "w-1.5 h-1.5" : "w-2 h-2")} />
-      {cfg.label}
+    <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border", styles[level], className)}>
+      <span className="w-1.5 h-1.5 rounded-full" style={{ background: dots[level] }} />
+      {level}
     </span>
   );
 }
@@ -118,50 +66,54 @@ interface StorageGaugeProps {
   capacityMCM: number;
   floodLevelMCM: number;
   minLevelMCM: number;
-  className?: string;
 }
 
-export function StorageGauge({ storageMCM, capacityMCM, floodLevelMCM, minLevelMCM, className }: StorageGaugeProps) {
+export function StorageGauge({ storageMCM, capacityMCM, floodLevelMCM, minLevelMCM }: StorageGaugeProps) {
   const pct = Math.min(100, (storageMCM / capacityMCM) * 100);
   const floodPct = (floodLevelMCM / capacityMCM) * 100;
   const minPct = (minLevelMCM / capacityMCM) * 100;
 
-  const color = pct >= floodPct
-    ? "#ef4444"
-    : pct <= minPct * 1.2
-      ? "#f97316"
-      : pct <= 40 ? "#f59e0b" : "#22d3ee";
+  const barColor = pct >= floodPct * 0.95 ? "#ef4444"
+    : pct >= floodPct * 0.85 ? "#f97316"
+    : pct <= minPct * 1.1 ? "#f59e0b"
+    : "#22d3ee";
 
   return (
-    <div className={cn("space-y-2", className)}>
-      <div className="flex justify-between text-xs text-muted-foreground">
-        <span>0 MCM</span>
-        <span className="font-semibold text-foreground">
-          {storageMCM.toFixed(0)} / {capacityMCM.toFixed(0)} MCM
-        </span>
-        <span>Full</span>
-      </div>
-      <div className="relative h-6 bg-muted rounded-full overflow-hidden border border-border">
-        {/* Flood control line */}
-        <div className="absolute top-0 bottom-0 w-0.5 bg-red-400 z-10" style={{ left: `${floodPct}%` }}>
-          <span className="absolute -top-5 left-1 text-[9px] text-red-500 whitespace-nowrap font-medium">Flood</span>
+    <div className="space-y-3">
+      {/* Bar */}
+      <div className="relative">
+        <div className="h-5 bg-muted rounded-full overflow-hidden border border-border">
+          <div
+            className="h-full rounded-full transition-all duration-700 ease-out"
+            style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${barColor}cc, ${barColor})` }}
+          />
         </div>
-        {/* Min operating line */}
-        <div className="absolute top-0 bottom-0 w-0.5 bg-amber-400 z-10" style={{ left: `${minPct}%` }}>
-          <span className="absolute -bottom-4 left-1 text-[9px] text-amber-500 whitespace-nowrap font-medium">Min</span>
-        </div>
-        {/* Fill */}
+        {/* Flood line marker */}
         <div
-          className="h-full rounded-full transition-all duration-1000"
-          style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${color}88, ${color})` }}
+          className="absolute top-0 bottom-0 w-0.5 bg-red-500 rounded-full"
+          style={{ left: `${floodPct}%` }}
+          title={`Flood control: ${floodLevelMCM.toFixed(0)} MCM`}
         />
-        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-foreground">
-          {pct.toFixed(1)}%
-        </span>
+        {/* Min line marker */}
+        <div
+          className="absolute top-0 bottom-0 w-0.5 bg-amber-500 rounded-full"
+          style={{ left: `${minPct}%` }}
+          title={`Minimum: ${minLevelMCM.toFixed(0)} MCM`}
+        />
       </div>
-      <div className="flex justify-between text-[10px] text-muted-foreground">
-        <span>Min operating: {minLevelMCM.toFixed(0)} MCM</span>
-        <span>Flood control: {floodLevelMCM.toFixed(0)} MCM</span>
+
+      {/* Labels */}
+      <div className="flex items-center justify-between text-xs">
+        <div className="flex items-center gap-3">
+          <span className="font-bold text-base font-tabular" style={{ color: barColor }}>
+            {pct.toFixed(1)}%
+          </span>
+          <span className="text-muted-foreground">{storageMCM.toFixed(0)} MCM of {capacityMCM.toFixed(0)} MCM</span>
+        </div>
+        <div className="flex items-center gap-4 text-muted-foreground">
+          <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" />Flood: {floodLevelMCM.toFixed(0)} MCM</div>
+          <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />Min: {minLevelMCM.toFixed(0)} MCM</div>
+        </div>
       </div>
     </div>
   );

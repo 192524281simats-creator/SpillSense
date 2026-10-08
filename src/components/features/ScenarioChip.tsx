@@ -3,9 +3,18 @@ import { SCENARIOS } from "@/lib/engine";
 import { cn } from "@/lib/utils";
 
 const SCENARIO_STYLES = {
-  elnino: "bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-700",
-  neutral: "bg-cyan-100 text-cyan-700 border-cyan-300 dark:bg-cyan-900/30 dark:text-cyan-300 dark:border-cyan-700",
-  lanina: "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700",
+  elnino: {
+    active: "bg-orange-500 text-white border-orange-400 shadow-sm",
+    idle: "text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 border-transparent",
+  },
+  neutral: {
+    active: "bg-cyan-500 text-white border-cyan-400 shadow-sm",
+    idle: "text-cyan-600 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 border-transparent",
+  },
+  lanina: {
+    active: "bg-blue-500 text-white border-blue-400 shadow-sm",
+    idle: "text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 border-transparent",
+  },
 };
 
 export function ScenarioChip({ className }: { className?: string }) {
@@ -13,17 +22,18 @@ export function ScenarioChip({ className }: { className?: string }) {
   const scenarios = ["elnino", "neutral", "lanina"] as const;
 
   return (
-    <div className={cn("flex items-center gap-1 p-1 bg-muted rounded-lg border border-border", className)}>
+    <div className={cn("flex items-center gap-0.5 p-0.5 bg-muted rounded-lg border border-border", className)}>
       {scenarios.map(s => (
         <button
           key={s}
           onClick={() => setScenario(s)}
           className={cn(
-            "px-2.5 py-1 rounded-md text-xs font-semibold transition-all duration-200",
+            "px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 border",
             scenario === s
-              ? SCENARIO_STYLES[s]
-              : "text-muted-foreground hover:text-foreground hover:bg-background"
+              ? SCENARIO_STYLES[s].active
+              : SCENARIO_STYLES[s].idle
           )}
+          title={SCENARIOS[s].description}
         >
           {SCENARIOS[s].label}
         </button>

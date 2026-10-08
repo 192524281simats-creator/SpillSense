@@ -1,62 +1,65 @@
+import { Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface SyntheticBadgeProps {
-  tooltip?: string;
-  className?: string;
-  short?: boolean;
-}
-
-export function SyntheticBadge({ tooltip, className, short }: SyntheticBadgeProps) {
-  const label = short ? "SYNTHETIC" : "SYNTHETIC DEMO DATA";
-  const tip = tooltip ?? "Simulated data is used where validated data is unavailable. The pipeline accepts real datasets.";
-
-  return (
-    <span
-      className={cn("synthetic-badge cursor-help", className)}
-      title={tip}
-    >
-      <span className="w-1.5 h-1.5 rounded-full bg-purple-500 dark:bg-purple-400 flex-shrink-0" />
-      {label}
-    </span>
-  );
-}
+type DataSource =
+  | "REAL" | "OFFICIAL" | "HISTORICAL" | "MODELLED" | "RECONSTRUCTED"
+  | "ESTIMATED" | "CALCULATED" | "MODEL_PREDICTION" | "SYNTHETIC";
 
 interface DataBadgeProps {
-  source: "REAL" | "OFFICIAL" | "HISTORICAL" | "MODELLED" | "RECONSTRUCTED" | "ESTIMATED" | "CALCULATED" | "MODEL_PREDICTION" | "SYNTHETIC";
+  source: DataSource;
   className?: string;
 }
 
-const SOURCE_COLORS: Record<DataBadgeProps["source"], string> = {
-  REAL: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700",
-  OFFICIAL: "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700",
-  HISTORICAL: "bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-900/30 dark:text-sky-300 dark:border-sky-700",
-  MODELLED: "bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-700",
-  RECONSTRUCTED: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700",
-  ESTIMATED: "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-700",
-  CALCULATED: "bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-900/30 dark:text-teal-300 dark:border-teal-700",
-  MODEL_PREDICTION: "bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-300 dark:border-violet-700",
-  SYNTHETIC: "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700",
+const SOURCE_STYLES: Record<DataSource, string> = {
+  REAL:             "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
+  OFFICIAL:         "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800",
+  HISTORICAL:       "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800",
+  MODELLED:         "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400 border-sky-200 dark:border-sky-800",
+  RECONSTRUCTED:    "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400 border-teal-200 dark:border-teal-800",
+  ESTIMATED:        "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800",
+  CALCULATED:       "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800",
+  MODEL_PREDICTION: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400 border-violet-200 dark:border-violet-800",
+  SYNTHETIC:        "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 border-purple-200 dark:border-purple-800",
 };
 
 export function DataBadge({ source, className }: DataBadgeProps) {
   return (
     <span className={cn(
-      "inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded border uppercase tracking-wide",
-      SOURCE_COLORS[source], className
+      "inline-flex items-center text-[9px] font-bold tracking-wide uppercase px-1.5 py-0.5 rounded border",
+      SOURCE_STYLES[source],
+      className
     )}>
-      {source}
+      {source.replace("_", " ")}
     </span>
   );
 }
 
-export function DecisionNotice({ className }: { className?: string }) {
+interface SyntheticBadgeProps {
+  short?: boolean;
+  className?: string;
+}
+
+export function SyntheticBadge({ short = false, className }: SyntheticBadgeProps) {
   return (
-    <div className={cn(
-      "flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 border border-border rounded-lg px-3 py-2",
-      className
-    )}>
-      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-      Decision support only, not automatic dam control. The operator makes the final decision.
+    <span
+      className={cn("synthetic-badge", className)}
+      title="Simulated data is used where validated data is unavailable. The pipeline accepts real datasets."
+    >
+      <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+      {short ? "SYNTHETIC" : "SYNTHETIC DEMO DATA"}
+    </span>
+  );
+}
+
+export function DecisionNotice() {
+  return (
+    <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-900/15
+                    border border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-400">
+      <Info className="w-4 h-4 shrink-0" />
+      <p className="text-xs leading-relaxed">
+        <strong>Decision support only.</strong> SpillSense does not automatically control dam gates. The operator makes all release decisions.
+        All data is SYNTHETIC DEMO DATA. Cauvery inter-state water-sharing orders are NOT modelled.
+      </p>
     </div>
   );
 }
